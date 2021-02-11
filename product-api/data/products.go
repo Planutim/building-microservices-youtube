@@ -16,13 +16,13 @@ type Product struct {
 	// min: 1
 	ID int `json:"id"` // Unique identifier for the product
 
-	// the name for this poduct
+	// the name for this product
 	//
 	// required: true
 	// max length: 255
 	Name string `json:"name" validate:"required"`
 
-	// the description for this poduct
+	// the description for this product
 	//
 	// required: false
 	// max length: 10000
@@ -54,7 +54,7 @@ func GetProducts() Products {
 // If a product is not found this function returns a ProductNotFound error
 func GetProductByID(id int) (*Product, error) {
 	i := findIndexByProductID(id)
-	if id == -1 {
+	if i == -1 {
 		return nil, ErrProductNotFound
 	}
 
@@ -65,24 +65,24 @@ func GetProductByID(id int) (*Product, error) {
 // item.
 // If a product with the given id does not exist in the database
 // this function returns a ProductNotFound error
-func UpdateProduct(p Product) error {
+func UpdateProduct(p *Product) error {
 	i := findIndexByProductID(p.ID)
 	if i == -1 {
 		return ErrProductNotFound
 	}
 
 	// update the product in the DB
-	productList[i] = &p
+	productList[i] = p
 
 	return nil
 }
 
 // AddProduct adds a new product to the database
-func AddProduct(p Product) {
+func AddProduct(p *Product) {
 	// get the next id in sequence
 	maxID := productList[len(productList)-1].ID
 	p.ID = maxID + 1
-	productList = append(productList, &p)
+	productList = append(productList, p)
 }
 
 // DeleteProduct deletes a product from the database
@@ -92,7 +92,7 @@ func DeleteProduct(id int) error {
 		return ErrProductNotFound
 	}
 
-	productList = append(productList[:i], productList[i+1])
+	productList = append(productList[:i], productList[i+1:]...)
 
 	return nil
 }

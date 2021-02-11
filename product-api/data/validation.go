@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/go-playground/validator"
+	"github.com/go-playground/validator/v10"
 )
 
 // ValidationError wraps the validators FieldError so we do not
@@ -66,8 +66,11 @@ func NewValidation() *Validation {
 //			fmt.Println()
 //	}
 func (v *Validation) Validate(i interface{}) ValidationErrors {
-	errs := v.validate.Struct(i).(validator.ValidationErrors)
-
+	errsI := v.validate.Struct(i)
+	if errsI == nil {
+		return nil
+	}
+	errs := errsI.(validator.ValidationErrors)
 	if len(errs) == 0 {
 		return nil
 	}

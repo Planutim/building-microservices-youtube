@@ -2,11 +2,13 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/building-microservices-youtube/product-api/data"
 )
 
-// swagger:route PUT /products products updateProduct
+// swagger:route PUT /products/{id} products updateProduct
 // Update a products details
 //
 // responses:
@@ -17,8 +19,13 @@ import (
 // Update handles PUT requests to update products
 func (p *Products) Update(rw http.ResponseWriter, r *http.Request) {
 
+	vars := mux.Vars(r)
+
+	id, _ := strconv.Atoi(vars["id"])
 	// fetch the product from the context
-	prod := r.Context().Value(KeyProduct{}).(data.Product)
+	prod := r.Context().Value(KeyProduct{}).(*data.Product)
+
+	prod.ID = id
 	p.l.Println("[DEBUG] updating record id", prod.ID)
 
 	err := data.UpdateProduct(prod)

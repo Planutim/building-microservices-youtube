@@ -28,7 +28,7 @@ func (p *Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
 
 			// return the validation messages as an array
 			rw.WriteHeader(http.StatusUnprocessableEntity)
-			data.ToJSON(&ValidationError{Messages: errs.Errors()}, rw)
+			data.ToJSON(&errs, rw)
 			return
 		}
 
